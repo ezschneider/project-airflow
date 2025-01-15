@@ -1,5 +1,5 @@
 from airflow import DAG
-from airflow.operators.python_operator import PythonOperator
+from airflow.operators.python import PythonOperator
 from datetime import datetime
 
 
@@ -9,7 +9,7 @@ def hello_world():
 
 default_args = {
     "owner": "airflow",
-    "start_date": datetime(2023, 1, 1),
+    "start_date": datetime(2025, 1, 1),
     "retries": 1,
 }
 
