@@ -13,6 +13,7 @@ dependencies and pass data.
 """
 
 from airflow.decorators import dag, task
+from airflow.models import Variable
 from pendulum import datetime
 import yfinance as yf
 
@@ -36,7 +37,7 @@ def stock_dag():
         so they can be used in a downstream pipeline. The task returns a list
         of Astronauts to be used in the next task.
         """
-        companies = ["PETR4.SA", "VALE3.SA"]
+        companies = Variable.get("tickers", default_var="[]", deserialize_json=True)
         tickers = yf.Tickers(companies)
 
         end_date = datetime.now().to_date_string()
