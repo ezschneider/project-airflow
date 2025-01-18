@@ -13,6 +13,7 @@ pre-commit = "^4.0.1"
 apache-airflow = "^2.10.4"
 loguru = "^0.7.3"
 pytest = "^8.3.4"
+yfinance = "^0.2.51"
 
 
 [build-system]
