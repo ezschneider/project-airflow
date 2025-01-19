@@ -14,14 +14,15 @@ dependencies and pass data.
 
 from airflow.decorators import dag, task
 from airflow.models import Variable
-from pendulum import datetime
 import yfinance as yf
+from pendulum import datetime as dt
+from datetime import datetime
 
 
 # Define the basic parameters of the DAG
 @dag(
-    start_date=datetime(2024, 1, 1),
-    schedule="@dayly",
+    start_date=dt(2024, 1, 1),
+    schedule="@daily",
     catchup=False,
     doc_md=__doc__,
     default_args={"owner": "ezschneider", "retries": 3},
@@ -30,7 +31,7 @@ import yfinance as yf
 def stock_dag():
     # Define tasks
     @task
-    def get_stock(**context) -> list[dict]:
+    def get_stock() -> list[dict]:
         """
         This task uses the requests library to retrieve a list of Astronauts
         currently in space. The results are pushed to XCom with a specific key
@@ -40,10 +41,13 @@ def stock_dag():
         companies = Variable.get("tickers", default_var="[]", deserialize_json=True)
         tickers = yf.Tickers(companies)
 
-        end_date = datetime.now().to_date_string()
+        end_date = datetime.now().strftime("%Y-%m-%d")
         tickers_hist = tickers.history(period="1d", end=end_date, interval="1m")
 
-        return tickers_hist
+        # Process the DataFrame into a list of dictionaries
+        result = tickers_hist.reset_index().to_dict(orient="records")
+
+        return result
 
     @task
     def print_stock_price(stock_prices: dict) -> None:
