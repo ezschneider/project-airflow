@@ -36,7 +36,7 @@ def stock_dag():
         so they can be used in a downstream pipeline. The task returns a list
         of Astronauts to be used in the next task.
         """
-        # companies = Variable.get("tickers")
+        # companies = Variable.get("tickers", deserialize_json=True)
         companies = ["PETR4.SA", "VALE3.SA", "ITUB4.SA", "BBAS3.SA"]
         tickers = yf.Tickers(companies)
 
