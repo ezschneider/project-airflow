@@ -13,15 +13,13 @@ dependencies and pass data.
 """
 
 from airflow.decorators import dag, task
-from airflow.models import Variable
 import yfinance as yf
-from pendulum import datetime as dt
-from datetime import datetime
+import pendulum
 
 
 # Define the basic parameters of the DAG
 @dag(
-    start_date=dt(2024, 1, 1),
+    start_date=pendulum.datetime(2024, 1, 1),
     schedule="@daily",
     catchup=False,
     doc_md=__doc__,
@@ -38,11 +36,12 @@ def stock_dag():
         so they can be used in a downstream pipeline. The task returns a list
         of Astronauts to be used in the next task.
         """
-        companies = Variable.get("tickers", default_var="[]", deserialize_json=True)
+        # companies = Variable.get("tickers")
+        companies = ["PETR4.SA", "VALE3.SA", "ITUB4.SA", "BBAS3.SA"]
         tickers = yf.Tickers(companies)
 
-        end_date = datetime.now().strftime("%Y-%m-%d")
-        tickers_hist = tickers.history(period="1d", end=end_date, interval="1m")
+        end_date = pendulum.now().strftime("%Y-%m-%d")
+        tickers_hist = tickers.history(period="max", end=end_date, interval="1m")
 
         # Process the DataFrame into a list of dictionaries
         result = tickers_hist.reset_index().to_dict(orient="records")
