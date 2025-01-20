@@ -13,6 +13,7 @@ dependencies and pass data.
 """
 
 from airflow.decorators import dag, task
+from airflow.models import Variable
 import yfinance as yf
 import pendulum
 
@@ -36,8 +37,8 @@ def stock_dag():
         so they can be used in a downstream pipeline. The task returns a list
         of Astronauts to be used in the next task.
         """
-        # companies = Variable.get("tickers", deserialize_json=True)
-        companies = ["PETR4.SA", "VALE3.SA", "ITUB4.SA", "BBAS3.SA"]
+        companies = Variable.get("tickers", deserialize_json=True)
+
         tickers = yf.Tickers(companies)
 
         end_date = pendulum.now().strftime("%Y-%m-%d")
@@ -46,28 +47,8 @@ def stock_dag():
         # Process the DataFrame into a list of dictionaries
         result = tickers_hist.reset_index().to_dict(orient="records")
         print(f"{result[-1]}")
-        # return result
 
     get_stock()
-    # @task
-    # def print_stock_price(stock_prices: dict) -> None:
-    #     """
-    #     This task creates a print statement with the name of an
-    #     Astronaut in space and the craft they are flying on from
-    #     the API request results of the previous task, along with a
-    #     greeting which is hard-coded in this example.
-    #     """
-
-
-#
-#     # print(f"{stock_prices["name"]}{stock_prices["price"]}")
-#     print(f"{stock_prices}")
-#
-# # Use dynamic task mapping to run the print_stock_price task for each
-# # Stock in response from the get_stock task
-# print_stock_price.expand(
-#     stock_prices=get_stock()  # Define dependencies using TaskFlow API syntax
-# )
 
 
 # Instantiate the DAG
