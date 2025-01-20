@@ -45,26 +45,29 @@ def stock_dag():
 
         # Process the DataFrame into a list of dictionaries
         result = tickers_hist.reset_index().to_dict(orient="records")
+        print(f"{result[-1]}")
+        # return result
 
-        return result
+    get_stock()
+    # @task
+    # def print_stock_price(stock_prices: dict) -> None:
+    #     """
+    #     This task creates a print statement with the name of an
+    #     Astronaut in space and the craft they are flying on from
+    #     the API request results of the previous task, along with a
+    #     greeting which is hard-coded in this example.
+    #     """
 
-    @task
-    def print_stock_price(stock_prices: dict) -> None:
-        """
-        This task creates a print statement with the name of an
-        Astronaut in space and the craft they are flying on from
-        the API request results of the previous task, along with a
-        greeting which is hard-coded in this example.
-        """
 
-        # print(f"{stock_prices["name"]}{stock_prices["price"]}")
-        print(f"{stock_prices}")
-
-    # Use dynamic task mapping to run the print_stock_price task for each
-    # Stock in response from the get_stock task
-    print_stock_price.expand(
-        stock_prices=get_stock()  # Define dependencies using TaskFlow API syntax
-    )
+#
+#     # print(f"{stock_prices["name"]}{stock_prices["price"]}")
+#     print(f"{stock_prices}")
+#
+# # Use dynamic task mapping to run the print_stock_price task for each
+# # Stock in response from the get_stock task
+# print_stock_price.expand(
+#     stock_prices=get_stock()  # Define dependencies using TaskFlow API syntax
+# )
 
 
 # Instantiate the DAG
